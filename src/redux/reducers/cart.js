@@ -4,7 +4,7 @@ const initialState = {
   totalCount: 0,
 };
 
-const getTotalPrice = (arr) => arr.reduce((sum, obj) => obj.price + sum, 0);
+const getTotalPrice = arr => arr.reduce((sum, obj) => obj.price + sum, 0);
 
 const _get = (obj, path) => {
   const [firstKey, ...keys] = path.split('.');
@@ -110,6 +110,14 @@ const cart = (state = initialState, action) => {
 
     case 'CLEAR_CART':
       return { totalPrice: 0, totalCount: 0, items: {} };
+
+    case 'SET_CART_FROM_SERVER':
+      return {
+        ...state,
+        items: action.payload,
+        totalCount: getTotalSum(action.payload, 'items.length'),
+        totalPrice: getTotalSum(action.payload, 'totalPrice'),
+      };
 
     default:
       return state;

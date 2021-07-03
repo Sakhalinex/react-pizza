@@ -1,12 +1,17 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
 import logoSvg from '../assets/img/pizza-logo.svg';
+import { fetchCartFromServer } from '../redux/actions/cart';
 import Button from './Button';
 
-function Header() {
+const Header: React.FC = () => {
+  const dispatch = useDispatch();
   const { totalPrice, totalCount } = useSelector(({ cart }) => cart);
+
+  React.useEffect(() => {
+    dispatch(fetchCartFromServer());
+  }, [dispatch]);
 
   return (
     <div className="header">
@@ -61,6 +66,6 @@ function Header() {
       </div>
     </div>
   );
-}
+};
 
 export default Header;

@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Button from '../Button';
 
 function PizzaBlock({ id, name, imageUrl, price, types, sizes, onClickAddPizza, addedCount }) {
@@ -10,11 +10,11 @@ function PizzaBlock({ id, name, imageUrl, price, types, sizes, onClickAddPizza, 
   const [activeType, setActiveType] = React.useState(types[0]);
   const [activeSize, setActiveSize] = React.useState(0);
 
-  const onSelectType = (index) => {
+  const onSelectType = index => {
     setActiveType(index);
   };
 
-  const onSelectSize = (index) => {
+  const onSelectSize = index => {
     setActiveSize(index);
   };
 

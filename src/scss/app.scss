@@ -139,11 +139,11 @@ body {
     &:hover {
       svg {
         path {
-          stroke: darken($color: #b6b6b6, $amount: 50);
+          stroke: #b6b6b6;
         }
       }
       span {
-        color: darken($color: #b6b6b6, $amount: 50);
+        color: #b6b6b6;
       }
     }
   }
@@ -302,14 +302,14 @@ body {
       }
 
       .button {
-        border-color: darken($color: $gray-line, $amount: 10);
+        border-color: $gray-line;
       }
 
       svg {
         transform: rotate(45deg);
 
         path {
-          fill: darken($color: $gray-line, $amount: 15);
+          fill: $gray-line;
         }
       }
 
@@ -321,8 +321,8 @@ body {
         }
         &:hover,
         &:active {
-          border-color: darken($color: $gray-line, $amount: 80);
-          background-color: darken($color: $gray-line, $amount: 80);
+          border-color: $gray-line;
+          background-color: $gray-line;
         }
       }
     }
@@ -357,17 +357,17 @@ body {
         justify-content: center;
         width: 210px;
 
-        border-color: darken($color: $gray-line, $amount: 10);
+        border-color: $gray-line;
 
         span {
-          color: darken($color: $gray-line, $amount: 20);
+          color: $gray-line;
           font-weight: 500;
           font-weight: 600;
         }
 
         &:hover {
-          background-color: darken($color: $gray-line, $amount: 90);
-          border-color: darken($color: $gray-line, $amount: 90);
+          background-color: $gray-line;
+          border-color: $gray-line;
 
           span {
             color: $gray-line;
