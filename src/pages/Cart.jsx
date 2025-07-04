@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import cartEmptyImage from '../assets/img/empty-cart.png';
-import { Button, CartItem } from '../components';
+import { CartItem } from '../components';
 import { clearCart, minusCartItem, plusCartItem, removeCartItem } from '../redux/actions/cart';
 
 function Cart() {
@@ -127,7 +127,8 @@ function Cart() {
                 name={obj.name}
                 type={obj.type}
                 size={obj.size}
-                totalPrice={obj.totalPrice}a
+                totalPrice={obj.totalPrice}
+                a
                 totalCount={obj.totalCount}
                 cartKey={obj.cartKey}
                 imageUrl={obj.imageUrl}
@@ -166,9 +167,9 @@ function Cart() {
                   <span>Вернуться назад</span>
                 </Link>
               </a>
-              <Button onClick={onClickOrder} className="pay-btn">
-                <span>Оплатить сейчас</span>
-              </Button>
+              <Link to="/order" className="button pay-btn">
+                <span>Оформить заказ</span>
+              </Link>
             </div>
           </div>
         </div>

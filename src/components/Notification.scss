@@ -1,0 +1,32 @@
+.notification {
+  position: fixed;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-40px);
+  min-width: 280px;
+  max-width: 90vw;
+  padding: 18px 32px;
+  border-radius: 12px;
+  font-size: 18px;
+  color: #fff;
+  background: #ff9800;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  z-index: 9999;
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notification--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.notification--success {
+  background: linear-gradient(90deg, #ff9800 0%, #ffc107 100%);
+}
+
+.notification--error {
+  background: linear-gradient(90deg, #e53935 0%, #ff7043 100%);
+}
