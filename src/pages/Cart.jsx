@@ -1,17 +1,22 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import cartEmptyImage from '../assets/img/empty-cart.png';
-import { CartItem, Button } from '../components';
-import { clearCart, removeCartItem, plusCartItem, minusCartItem } from '../redux/actions/cart';
+import { Button, CartItem } from '../components';
+import { clearCart, minusCartItem, plusCartItem, removeCartItem } from '../redux/actions/cart';
 
 function Cart() {
   const dispatch = useDispatch();
   const { totalPrice, totalCount, items } = useSelector(({ cart }) => cart);
 
-  const addedPizzas = Object.keys(items).map((key) => {
-    return items[key].items[0];
+  const addedPizzas = Object.entries(items).map(([cartKey, value]) => {
+    return {
+      ...value.items[0],
+      cartKey,
+      totalPrice: value.totalPrice,
+      totalCount: value.items.length,
+    };
   });
 
   const onClearCart = () => {
@@ -20,18 +25,18 @@ function Cart() {
     }
   };
 
-  const onRemoveItem = (id) => {
+  const onRemoveItem = pizzaObj => {
     if (window.confirm('Вы действительно хотите удалить?')) {
-      dispatch(removeCartItem(id));
+      dispatch(removeCartItem(pizzaObj));
     }
   };
 
-  const onPlusItem = (id) => {
-    dispatch(plusCartItem(id));
+  const onPlusItem = pizzaObj => {
+    dispatch(plusCartItem(pizzaObj));
   };
 
-  const onMinusItem = (id) => {
-    dispatch(minusCartItem(id));
+  const onMinusItem = pizzaObj => {
+    dispatch(minusCartItem(pizzaObj));
   };
 
   const onClickOrder = () => {
@@ -115,18 +120,20 @@ function Cart() {
             </div>
           </div>
           <div className="content__items">
-            {addedPizzas.map((obj) => (
+            {addedPizzas.map(obj => (
               <CartItem
-                key={obj.id}
+                key={obj.cartKey}
                 id={obj.id}
                 name={obj.name}
                 type={obj.type}
                 size={obj.size}
-                totalPrice={items[obj.id].totalPrice}
-                totalCount={items[obj.id].items.length}
-                onRemove={onRemoveItem}
-                onMinus={onMinusItem}
-                onPlus={onPlusItem}
+                totalPrice={obj.totalPrice}a
+                totalCount={obj.totalCount}
+                cartKey={obj.cartKey}
+                imageUrl={obj.imageUrl}
+                onRemove={() => onRemoveItem(obj)}
+                onMinus={() => onMinusItem(obj)}
+                onPlus={() => onPlusItem(obj)}
               />
             ))}
           </div>

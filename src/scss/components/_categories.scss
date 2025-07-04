@@ -1,4 +1,5 @@
-@import 'variables';
+@import '../variables';
+@import '../libs/normalize';
 
 .categories {
   flex: 1;
@@ -24,11 +25,11 @@
       @include noselect();
 
       &:hover {
-        background-color: darken(#f9f9f9, 2%);
+        background-color: #f9f9f9;
       }
 
       &:active {
-        background-color: darken(#f9f9f9, 5%);
+        background-color: #f9f9f9;
       }
 
       &.active {

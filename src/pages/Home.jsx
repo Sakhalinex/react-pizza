@@ -1,15 +1,22 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Categories, SortPopup, PizzaBlock, PizzaLoadingBlock } from '../components';
+import {
+  Categories,
+  PizzaBlock,
+  PizzaLoadingBlock,
+  SearchInput,
+  SortDirectionButton,
+  SortPopup,
+} from '../components';
 
+import { addPizzaToCart } from '../redux/actions/cart';
 import { setCategory, setSortBy } from '../redux/actions/filters';
 import { fetchPizzas } from '../redux/actions/pizzas';
-import { addPizzaToCart } from '../redux/actions/cart';
 
 const categoryNames = ['Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 const sortIems = [
-  { name: 'популярности', type: 'popular', order: 'desc' },
+  { name: 'популярности', type: 'rating', order: 'desc' },
   { name: 'цене', type: 'price', order: 'desc' },
   { name: 'алфавит', type: 'name', order: 'asc' },
 ];
@@ -21,23 +28,35 @@ function Home() {
   const isLoaded = useSelector(({ pizzas }) => pizzas.isLoaded);
   const { category, sortBy } = useSelector(({ filters }) => filters);
 
+  const [search, setSearch] = React.useState('');
+
   React.useEffect(() => {
-    dispatch(fetchPizzas(sortBy, category));
-  }, [category, sortBy]);
+    dispatch(fetchPizzas(sortBy, category, search));
+  }, [category, sortBy, search, dispatch]);
 
-  const onSelectCategory = React.useCallback((index) => {
-    dispatch(setCategory(index));
-  }, []);
+  const onSelectCategory = React.useCallback(
+    index => {
+      dispatch(setCategory(index));
+    },
+    [dispatch],
+  );
 
-  const onSelectSortType = React.useCallback((type) => {
-    dispatch(setSortBy(type));
-  }, []);
+  const onSelectSortType = React.useCallback(
+    type => {
+      dispatch(setSortBy(type));
+    },
+    [dispatch],
+  );
 
-  const handleAddPizzaToCart = (obj) => {
-    dispatch({
-      type: 'ADD_PIZZA_CART',
-      payload: obj,
-    });
+  const onChangeSortOrder = React.useCallback(
+    order => {
+      dispatch(setSortBy({ ...sortBy, order }));
+    },
+    [dispatch, sortBy],
+  );
+
+  const handleAddPizzaToCart = obj => {
+    dispatch(addPizzaToCart(obj));
   };
 
   return (
@@ -48,16 +67,24 @@ function Home() {
           onClickCategory={onSelectCategory}
           items={categoryNames}
         />
-        <SortPopup
-          activeSortType={sortBy.type}
-          items={sortIems}
-          onClickSortType={onSelectSortType}
-        />
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <SortPopup
+            activeSortType={sortBy.type}
+            items={sortIems}
+            onClickSortType={onSelectSortType}
+          />
+          <SortDirectionButton direction={sortBy.order} onChange={onChangeSortOrder} />
+        </div>
       </div>
-      <h2 className="content__title">Все пиццы</h2>
+      <h2
+        className="content__title"
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span>Все пиццы</span>
+        <SearchInput value={search} onChange={setSearch} />
+      </h2>
       <div className="content__items">
         {isLoaded
-          ? items.map((obj) => (
+          ? items.map(obj => (
               <PizzaBlock
                 onClickAddPizza={handleAddPizzaToCart}
                 key={obj.id}

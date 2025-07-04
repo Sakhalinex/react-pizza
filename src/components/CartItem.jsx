@@ -1,17 +1,29 @@
 import React from 'react';
 import Button from './Button';
 
-const CartItem = ({ id, name, type, size, totalPrice, totalCount, onRemove, onMinus, onPlus }) => {
+const CartItem = ({
+  id,
+  name,
+  type,
+  size,
+  totalPrice,
+  totalCount,
+  cartKey,
+  onRemove,
+  onMinus,
+  onPlus,
+  imageUrl,
+}) => {
   const handleRemoveClick = () => {
-    onRemove(id);
+    onRemove();
   };
 
   const handlePlusItem = () => {
-    onPlus(id);
+    onPlus();
   };
 
   const handleMinusItem = () => {
-    onMinus(id);
+    onMinus();
   };
 
   return (
@@ -19,14 +31,18 @@ const CartItem = ({ id, name, type, size, totalPrice, totalCount, onRemove, onMi
       <div className="cart__item-img">
         <img
           className="pizza-block__image"
-          src="https://dodopizza-a.akamaihd.net/static/Img/Products/Pizza/ru-RU/b750f576-4a83-48e6-a283-5a8efb68c35d.jpg"
+          src={
+            name == 'Маргарита' || name === 'Пепперони'
+              ? 'https://media.dodostatic.net/image/r:584x584/11ee7d6105ef6690b86fbde6150b5b0c.avif'
+              : imageUrl
+          }
           alt="Pizza"
         />
       </div>
       <div className="cart__item-info">
         <h3>{name}</h3>
         <p>
-          {type} тесто, {size} см.
+          {type} теста, {size} см.
         </p>
       </div>
       <div className="cart__item-count">

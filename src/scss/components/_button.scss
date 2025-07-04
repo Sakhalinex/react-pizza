@@ -1,4 +1,5 @@
-@import 'variables';
+@import '../variables';
+@import '../libs/normalize';
 
 .button {
   display: inline-block;
@@ -25,11 +26,11 @@
   }
 
   &:hover {
-    background-color: darken($orange, 8%);
+    background-color: $orange;
   }
 
   &:active {
-    background-color: darken($orange, 12%);
+    background-color: $orange;
     transform: translateY(1px);
   }
 
@@ -83,7 +84,7 @@
     }
 
     &:active {
-      background-color: darken($orange, 8%);
+      background-color: $orange;
     }
   }
 
