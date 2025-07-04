@@ -43,8 +43,8 @@ const OrderPage = ({ showNotification }) => {
         }),
       );
       dispatch(clearCart());
-      if (appliedPromocode && appliedPromocode.id) {
-        dispatch(burnPromocode(appliedPromocode.id));
+      if (appliedPromocode && appliedPromocode.code) {
+        dispatch(burnPromocode(appliedPromocode.code));
       }
       showNotification('Оплата прошла успешно! Спасибо за заказ!', 'success');
       history.push('/');
