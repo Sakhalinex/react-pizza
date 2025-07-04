@@ -2,6 +2,7 @@
   "name": "react-pizza",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://Sakhalinex.github.io/react-pizza",
   "dependencies": {
     "@babel/core": "7.9.0",
     "@svgr/webpack": "4.3.3",
@@ -76,7 +77,9 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "server": "node server.js",
-    "json-server": "json-server --watch public/db.json --port=3001"
+    "json-server": "json-server --watch public/db.json --port=3001",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -151,6 +154,7 @@
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
     "cross-env": "^7.0.3",
+    "gh-pages": "^6.3.0",
     "sass": "^1.89.2",
     "typescript": "^5.8.3"
   }
