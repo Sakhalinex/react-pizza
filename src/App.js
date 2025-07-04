@@ -4,6 +4,7 @@ import { Header } from './components';
 import Notification from './components/Notification';
 import { Cart, Home } from './pages';
 import OrderPage from './pages/OrderPage';
+import OrdersPage from './pages/OrdersPage';
 
 function App() {
   const [notification, setNotification] = useState({
@@ -32,6 +33,7 @@ function App() {
       <div className="content">
         <Route path="/" component={Home} exact />
         <Route path="/cart" component={Cart} exact />
+        <Route path="/orders" component={OrdersPage} exact />
         <Route
           path="/order"
           render={() => <OrderPage showNotification={showNotification} />}
