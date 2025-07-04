@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -5,10 +6,15 @@ import { Link } from 'react-router-dom';
 import cartEmptyImage from '../assets/img/empty-cart.png';
 import { CartItem } from '../components';
 import { clearCart, minusCartItem, plusCartItem, removeCartItem } from '../redux/actions/cart';
+import { checkPromocode, removePromocode } from '../redux/actions/promocodes';
 
 function Cart() {
   const dispatch = useDispatch();
   const { totalPrice, totalCount, items } = useSelector(({ cart }) => cart);
+  const appliedPromocode = useSelector(state => state.promocodes?.appliedPromocode || null);
+
+  const [promoInput, setPromoInput] = React.useState('');
+  const [promoMessage, setPromoMessage] = React.useState('');
 
   const addedPizzas = Object.entries(items).map(([cartKey, value]) => {
     return {
@@ -19,9 +25,29 @@ function Cart() {
     };
   });
 
+  React.useEffect(() => {
+    const checkPromo = async () => {
+      if (appliedPromocode && appliedPromocode.id) {
+        try {
+          const { data } = await axios.get(
+            `https://686750c9e3fefb261ede4439.mockapi.io/db2/promo/${appliedPromocode.id}`,
+          );
+          if (!data || data.code !== appliedPromocode.code) {
+            dispatch(removePromocode());
+          }
+        } catch {
+          dispatch(removePromocode());
+        }
+      }
+    };
+    checkPromo();
+    // eslint-disable-next-line
+  }, []);
+
   const onClearCart = () => {
     if (window.confirm('Вы действительно хотите очистить корзину?')) {
       dispatch(clearCart());
+      dispatch(removePromocode());
     }
   };
 
@@ -39,9 +65,22 @@ function Cart() {
     dispatch(minusCartItem(pizzaObj));
   };
 
-  const onClickOrder = () => {
-    console.log('ВАШ ЗАКАЗ', items);
+  const handleApplyPromo = e => {
+    e.preventDefault();
+    const result = dispatch(checkPromocode(promoInput));
+    setPromoMessage(result.message);
+    setPromoInput('');
   };
+
+  const handleRemovePromo = () => {
+    dispatch(removePromocode());
+    setPromoMessage('Промокод удалён');
+  };
+
+  const discount = appliedPromocode
+    ? Math.round((totalPrice * appliedPromocode.discount) / 100)
+    : 0;
+  const finalPrice = totalPrice - discount;
 
   return (
     <div className="container container--cart">
@@ -128,7 +167,6 @@ function Cart() {
                 type={obj.type}
                 size={obj.size}
                 totalPrice={obj.totalPrice}
-                a
                 totalCount={obj.totalCount}
                 cartKey={obj.cartKey}
                 imageUrl={obj.imageUrl}
@@ -139,6 +177,54 @@ function Cart() {
             ))}
           </div>
           <div className="cart__bottom">
+            <form
+              onSubmit={handleApplyPromo}
+              style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
+              <input
+                type="text"
+                value={promoInput}
+                onChange={e => setPromoInput(e.target.value)}
+                placeholder="Промокод"
+                style={{
+                  padding: '10px 16px',
+                  borderRadius: 8,
+                  border: '1px solid #eee',
+                  fontSize: 16,
+                  outline: 'none',
+                  background: '#faf8f6',
+                  width: 180,
+                }}
+                disabled={!!appliedPromocode}
+              />
+              {!appliedPromocode ? (
+                <button type="submit" className="button button--cart" style={{ fontSize: 16 }}>
+                  Применить
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="button button--black"
+                  style={{ fontSize: 16 }}
+                  onClick={handleRemovePromo}>
+                  Удалить
+                </button>
+              )}
+              {promoMessage && (
+                <span
+                  style={{
+                    color: appliedPromocode ? '#4caf50' : '#e53935',
+                    fontWeight: 500,
+                    marginLeft: 8,
+                  }}>
+                  {promoMessage}
+                </span>
+              )}
+              {appliedPromocode && (
+                <span style={{ color: '#ff9800', fontWeight: 600, marginLeft: 8 }}>
+                  {appliedPromocode.code}: {appliedPromocode.description}
+                </span>
+              )}
+            </form>
             <div className="cart__bottom-details">
               <span>
                 Всего пицц: <b>{totalCount} шт.</b>
@@ -146,9 +232,17 @@ function Cart() {
               <span>
                 Сумма заказа: <b>{totalPrice} ₽</b>
               </span>
+              {appliedPromocode && (
+                <span style={{ color: '#4caf50', fontWeight: 600 }}>Скидка: -{discount} ₽</span>
+              )}
+              {appliedPromocode && (
+                <span style={{ color: '#ff9800', fontWeight: 600 }}>
+                  К оплате: <b>{finalPrice} ₽</b>
+                </span>
+              )}
             </div>
             <div className="cart__bottom-buttons">
-              <a href="/" className="button button--outline button--add go-back-btn">
+              <Link to="/" className="button button--outline button--add go-back-btn">
                 <svg
                   width="8"
                   height="14"
@@ -163,10 +257,8 @@ function Cart() {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <Link to="/">
-                  <span>Вернуться назад</span>
-                </Link>
-              </a>
+                <span>Вернуться назад</span>
+              </Link>
               <Link to="/order" className="button pay-btn">
                 <span>Оформить заказ</span>
               </Link>

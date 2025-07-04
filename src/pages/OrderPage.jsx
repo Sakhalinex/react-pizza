@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { clearCart } from '../redux/actions/cart';
+import { saveOrder } from '../redux/actions/orders';
+import { burnPromocode } from '../redux/actions/promocodes';
+import store from '../redux/store';
 
 const OrderPage = ({ showNotification }) => {
   const dispatch = useDispatch();
@@ -9,6 +12,8 @@ const OrderPage = ({ showNotification }) => {
   const [form, setForm] = useState({ name: '', phone: '', address: '' });
   const [loading, setLoading] = useState(false);
   const totalPrice = useSelector(state => state.cart.totalPrice);
+  const items = useSelector(state => state.cart.items);
+  const appliedPromocode = useSelector(state => state.promocodes?.appliedPromocode);
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,7 +27,25 @@ const OrderPage = ({ showNotification }) => {
     setLoading(false);
     const isSuccess = Math.random() > 0.1; // 90% успеха
     if (isSuccess) {
+      const currentItems = store.getState().cart.items;
+      if (!currentItems || Object.keys(currentItems).length === 0) {
+        showNotification('Корзина пуста, заказ не может быть оформлен.', 'error');
+        return;
+      }
+      dispatch(
+        saveOrder({
+          name: form.name,
+          phone: form.phone,
+          address: form.address,
+          totalPrice,
+          items: currentItems,
+          promocode: appliedPromocode || null,
+        }),
+      );
       dispatch(clearCart());
+      if (appliedPromocode && appliedPromocode.id) {
+        dispatch(burnPromocode(appliedPromocode.id));
+      }
       showNotification('Оплата прошла успешно! Спасибо за заказ!', 'success');
       history.push('/');
     } else {

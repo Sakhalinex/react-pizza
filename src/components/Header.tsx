@@ -1,13 +1,14 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+// @ts-ignore
 import logoSvg from '../assets/img/pizza-logo.svg';
 import { fetchCartFromServer } from '../redux/actions/cart';
 import Button from './Button';
 
 const Header: React.FC = () => {
   const dispatch = useDispatch();
-  const { totalPrice, totalCount } = useSelector(({ cart }) => cart);
+  const { totalPrice, totalCount } = useSelector((state: any) => state.cart);
 
   React.useEffect(() => {
     dispatch(fetchCartFromServer());
@@ -26,9 +27,29 @@ const Header: React.FC = () => {
           </div>
         </Link>
 
-        <div className="header__cart">
+        <div className="header__cart" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <Link to="/orders">
+            <Button className="button--orders" outline={true} onClick={undefined}>
+              <span
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  color: '#ff9800',
+                  fontWeight: 600,
+                }}>
+                <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
+                  <path
+                    d="M5 2.5A2.5 2.5 0 0 0 2.5 5v10A2.5 2.5 0 0 0 5 17.5h10A2.5 2.5 0 0 0 17.5 15V5A2.5 2.5 0 0 0 15 2.5H5Zm0 1.5h10A1 1 0 0 1 16 5v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm2.5 2A.5.5 0 0 0 7 6.5v5a.5.5 0 0 0 .146.354l2.5 2.5a.5.5 0 0 0 .708-.708L8 11.293V6.5A.5.5 0 0 0 7.5 6Zm5 0a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.146.354l-2.5 2.5a.5.5 0 1 1-.708-.708L12 11.293V6.5a.5.5 0 0 1 .5-.5Z"
+                    fill="#ff9800"
+                  />
+                </svg>
+                <span>Мои заказы</span>
+              </span>
+            </Button>
+          </Link>
           <Link to="/cart">
-            <Button className="button--cart">
+            <Button className="button--cart" onClick={undefined} outline={false}>
               <span>{totalPrice} ₽</span>
               <div className="button__delimiter"></div>
               <svg
